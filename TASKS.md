@@ -103,20 +103,29 @@
 
 ---
 
-## 💰 Phase 5: Deals Module ⏳
+## 💰 Phase 5: Deals Module ✅
 
-### 5.1 Deals Board View (`/deals`)
-- [ ] Create deals page route
-- [ ] Implement Kanban board (columns: New, Qualified, Proposal, Negotiation, Won, Lost)
-- [ ] Deal cards (title, value, probability, expected close)
-- [ ] Drag-and-drop between stages
+### 5.1 Deals Board View (`/deals`) ✅
+- [x] Create deals page route
+- [x] Pipeline summary cards (Open Deals, Pipeline Value, Weighted Value)
+- [x] Implement Kanban board (columns: New, Qualified, Proposal, Negotiation, Won, Lost)
+- [x] Deal cards (title, lead name, value, probability, expected close)
+- [x] Drag-and-drop between stages with toast notifications
+- [x] Search and stage filter
 
-### 5.2 Deal Detail Screen (`/deals/[id]`)
-- [ ] Create deal detail page with tabs (Overview, Activity, Notes, Tasks)
-- [ ] Link back to lead
+### 5.2 Deal Detail Screen (`/deals/[id]`) ✅
+- [x] Create deal detail page with tabs (Overview, Activity, Notes, Tasks)
+- [x] Header with deal title, stage badge, value
+- [x] Link back to lead
+- [x] Right sidebar with weighted value and summary
 
-### 5.3 Create/Edit Deal Form
-- [ ] FormDrawer with fields: Title, Lead, Value, Stage, Probability, Close Date
+### 5.3 Create/Edit Deal Form ✅
+- [x] FormDrawer with fields: Title, Lead, Value, Stage, Probability, Close Date, Notes
+- [x] Probability auto-updates based on stage
+- [x] Lead selection from mock data
+
+### 5.4 Deals - Pending
+- [ ] Connect to Supabase when ready
 
 ---
 
