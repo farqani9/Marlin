@@ -129,16 +129,19 @@
 
 ---
 
-## ✅ Phase 6: Tasks Module
+## ✅ Phase 6: Tasks Module ✅
 
-### 6.1 Tasks List Screen (`/tasks`)
-- [ ] Create tasks page route
-- [ ] Quick filter buttons: Today, Upcoming, Overdue, No Date
-- [ ] TaskList with completion toggle
-- [ ] Click task → opens linked entity detail
+### 6.1 Tasks List Screen (`/tasks`) ✅
+- [x] Create tasks page route
+- [x] Stats cards (Total, Due Today, Overdue, Completed)
+- [x] Quick filter buttons: All, Today, Upcoming, Overdue, No Date
+- [x] Task cards with checkbox completion toggle
+- [x] Linked entity badges (Lead/Deal) with click navigation
+- [x] Search functionality
 
-### 6.2 Create/Edit Task Form
-- [ ] FormDrawer with fields: Title, Due Date, Link to Lead/Deal, Description
+### 6.2 Create/Edit Task Form ✅
+- [x] FormDrawer with fields: Title, Description, Due Date, Link to Lead, Link to Deal
+- [x] Toast notifications on create/complete
 
 ---
 
