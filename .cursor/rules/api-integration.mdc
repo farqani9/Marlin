@@ -1,0 +1,161 @@
+---
+description: API integration patterns and Supabase usage for Marlin CRM
+globs: ["src/lib/**/*", "src/hooks/**/*"]
+---
+
+# API Integration
+
+## Supabase Client
+
+### Location
+```
+src/lib/supabase.ts
+```
+
+### Configuration
+```typescript
+import { createClient } from '@supabase/supabase-js'
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+```
+
+## Database Tables
+
+| Table | Purpose |
+|-------|---------|
+| `leads` | Lead/prospect information |
+| `deals` | Sales opportunities linked to leads |
+| `tasks` | Action items linked to leads/deals |
+| `notes` | Rich text notes for leads/deals |
+| `activity_log` | Auto-logged entity changes |
+| `pipeline_stages` | Custom pipeline stage definitions |
+
+## Data Fetching Patterns
+
+### TanStack Query Hooks
+All data fetching should use TanStack Query hooks located in `src/hooks/`.
+
+```typescript
+// src/hooks/use-leads.ts
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { supabase } from '@/lib/supabase'
+import type { Lead, LeadFormData } from '@/types'
+
+// Query keys (for cache management)
+export const leadKeys = {
+  all: ['leads'] as const,
+  detail: (id: string) => ['leads', id] as const,
+}
+
+// Fetch all leads
+export function useLeads() {
+  return useQuery({
+    queryKey: leadKeys.all,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('leads')
+        .select('*')
+        .order('created_at', { ascending: false })
+      if (error) throw error
+      return data as Lead[]
+    },
+  })
+}
+
+// Fetch single lead with related data
+export function useLead(id: string) {
+  return useQuery({
+    queryKey: leadKeys.detail(id),
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('leads')
+        .select(`
+          *,
+          deals (*),
+          tasks (*),
+          notes (*)
+        `)
+        .eq('id', id)
+        .single()
+      if (error) throw error
+      return data
+    },
+  })
+}
+
+// Create lead mutation
+export function useCreateLead() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (data: LeadFormData) => {
+      const { data: lead, error } = await supabase
+        .from('leads')
+        .insert(data)
+        .select()
+        .single()
+      if (error) throw error
+      return lead
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: leadKeys.all })
+    },
+  })
+}
+```
+
+## Error Handling
+
+### Standard Pattern
+```typescript
+const { data, error } = await supabase.from('table').select('*')
+if (error) throw error
+return data
+```
+
+### TanStack Query handles:
+- Loading states (`isLoading`)
+- Error states (`isError`, `error`)
+- Retry logic (automatic)
+- Cache invalidation
+
+## Real-time Subscriptions (Optional)
+
+```typescript
+// Subscribe to lead changes
+useEffect(() => {
+  const channel = supabase
+    .channel('leads')
+    .on('postgres_changes', 
+      { event: '*', schema: 'public', table: 'leads' },
+      (payload) => {
+        queryClient.invalidateQueries({ queryKey: ['leads'] })
+      }
+    )
+    .subscribe()
+
+  return () => { supabase.removeChannel(channel) }
+}, [])
+```
+
+## Activity Logging
+
+Activity is logged automatically via Supabase triggers or manually:
+
+```typescript
+async function logActivity(
+  entityType: 'lead' | 'deal' | 'task' | 'note',
+  entityId: string,
+  actionType: string,
+  description: string
+) {
+  await supabase.from('activity_log').insert({
+    entity_type: entityType,
+    entity_id: entityId,
+    action_type: actionType,
+    description,
+  })
+}
+```

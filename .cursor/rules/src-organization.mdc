@@ -1,0 +1,71 @@
+---
+description: Source code organization and folder structure for Marlin CRM
+globs: ["src/**/*"]
+---
+
+# Source Code Organization
+
+## Directory Structure
+
+```
+src/
+├── app/                    # Next.js App Router
+│   ├── layout.tsx          # Root layout with providers
+│   ├── page.tsx            # Home page
+│   ├── globals.css         # Global styles and CSS variables
+│   ├── (dashboard)/        # Dashboard route group
+│   ├── leads/              # Leads module routes
+│   ├── deals/              # Deals module routes
+│   ├── tasks/              # Tasks module routes
+│   └── settings/           # Settings routes
+│
+├── components/
+│   ├── ui/                 # ShadCN UI primitives (buttons, inputs, etc.)
+│   ├── layout/             # App shell components (sidebar, topbar)
+│   ├── common/             # Shared components (data tables, cards)
+│   └── providers.tsx       # Context providers (TanStack Query)
+│
+├── hooks/                  # Custom React hooks
+│   ├── use-leads.ts        # Lead data fetching hooks
+│   ├── use-deals.ts        # Deal data fetching hooks
+│   └── use-tasks.ts        # Task data fetching hooks
+│
+├── lib/                    # Utility libraries
+│   ├── supabase.ts         # Supabase client instance
+│   └── utils.ts            # ShadCN helper utilities
+│
+├── stores/                 # Zustand state stores
+│   ├── ui-store.ts         # UI state (sidebar, modals)
+│   └── command-palette.ts  # Command palette state
+│
+└── types/                  # TypeScript type definitions
+    └── index.ts            # Entity types (Lead, Deal, Task, Note)
+```
+
+## Naming Conventions
+
+### Files
+- **Components**: PascalCase (`DataTable.tsx`, `LeadCard.tsx`)
+- **Hooks**: camelCase with `use-` prefix (`use-leads.ts`)
+- **Utilities**: camelCase (`utils.ts`, `supabase.ts`)
+- **Types**: camelCase (`index.ts`) or entity name (`lead.ts`)
+- **Stores**: kebab-case (`ui-store.ts`)
+
+### Components
+- One component per file (default export)
+- Co-locate component-specific styles if needed
+- Index files for barrel exports in feature folders
+
+### Routes (App Router)
+- Folder names are route segments
+- `page.tsx` for page content
+- `layout.tsx` for shared layouts
+- `loading.tsx` for loading states
+- Route groups with `(groupName)` for organization
+
+## Import Aliases
+```typescript
+import { Button } from "@/components/ui/button"
+import { supabase } from "@/lib/supabase"
+import type { Lead } from "@/types"
+```

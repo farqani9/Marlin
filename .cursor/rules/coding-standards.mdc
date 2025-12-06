@@ -1,0 +1,128 @@
+---
+description: Coding standards and style guide for Marlin CRM development
+globs: ["**/*.{ts,tsx,js,jsx}"]
+---
+
+# Coding Standards
+
+## TypeScript
+
+### Strict Mode
+- Always use strict TypeScript (`strict: true` in tsconfig)
+- Avoid `any` type - use `unknown` and narrow with type guards
+- Define explicit return types for functions
+- Use interface for object shapes, type for unions/primitives
+
+### Type Definitions
+```typescript
+// Entity types in src/types/index.ts
+import type { Lead, Deal, Task, Note } from "@/types"
+
+// Form data types (omit auto-generated fields)
+type LeadFormData = Omit<Lead, 'id' | 'created_at' | 'updated_at'>
+```
+
+## React Patterns
+
+### Component Structure
+```typescript
+'use client' // Only if using hooks/interactivity
+
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import type { Lead } from '@/types'
+
+interface LeadCardProps {
+  lead: Lead
+  onEdit?: (id: string) => void
+}
+
+export function LeadCard({ lead, onEdit }: LeadCardProps) {
+  // hooks first
+  const [isOpen, setIsOpen] = useState(false)
+  
+  // handlers
+  const handleEdit = () => onEdit?.(lead.id)
+  
+  // render
+  return (...)
+}
+```
+
+### State Management
+- **Server State**: TanStack Query for all API data
+- **UI State**: Zustand for global UI (modals, sidebar)
+- **Local State**: useState for component-specific state
+
+### Data Fetching
+```typescript
+// Using TanStack Query
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+
+// Queries
+const { data, isLoading } = useQuery({
+  queryKey: ['leads'],
+  queryFn: () => supabase.from('leads').select('*')
+})
+
+// Mutations with cache invalidation
+const mutation = useMutation({
+  mutationFn: (data) => supabase.from('leads').insert(data),
+  onSuccess: () => queryClient.invalidateQueries({ queryKey: ['leads'] })
+})
+```
+
+## Styling
+
+### TailwindCSS
+- Use Tailwind utility classes directly
+- Prefer `cn()` helper for conditional classes
+- Use CSS variables from `globals.css` for theming
+
+```typescript
+import { cn } from '@/lib/utils'
+
+<div className={cn(
+  "rounded-lg border p-4",
+  isActive && "border-primary bg-primary/10"
+)} />
+```
+
+### ShadCN Components
+- Import from `@/components/ui/*`
+- Customize via className prop, not by editing source
+- Use component variants when available
+
+## Error Handling
+
+### API Calls
+```typescript
+try {
+  const { data, error } = await supabase.from('leads').select('*')
+  if (error) throw error
+  return data
+} catch (error) {
+  console.error('Failed to fetch leads:', error)
+  throw error // Let TanStack Query handle retry/error state
+}
+```
+
+### Form Validation
+- Use Zod schemas for validation
+- Display inline errors near fields
+- Disable submit during pending state
+
+## File Organization
+
+### Imports Order
+1. React/Next.js
+2. Third-party libraries
+3. Internal components (`@/components/`)
+4. Internal utilities (`@/lib/`, `@/hooks/`)
+5. Types
+6. Styles
+
+### Exports
+- Named exports for utilities and hooks
+- Default exports for page components
+- Barrel exports (`index.ts`) for feature folders

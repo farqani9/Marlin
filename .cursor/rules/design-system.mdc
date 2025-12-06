@@ -1,0 +1,65 @@
+---
+description: Design system reference for Marlin CRM - ShadCN dark theme
+globs: ["src/**/*.{tsx,css}"]
+alwaysApply: true
+---
+
+# Design System Reference
+
+**ALWAYS reference `DESIGN_SYSTEM.md` in the project root for UI consistency.**
+
+## Quick Reference
+
+### Colors (Dark Theme)
+- Background: `#09090b` (zinc-950)
+- Card: `#0a0a0b`
+- Border: `#27272a` (zinc-800)
+- Text: `#fafafa` (foreground)
+- Muted text: `#a1a1aa` (zinc-400)
+- Primary: `#fafafa`
+
+### Typography
+- Font: Geist (sans), Geist Mono (code)
+- Page titles: `text-2xl font-semibold`
+- Section headers: `text-lg font-medium`
+- Body: `text-sm` or `text-base`
+- Muted: `text-muted-foreground`
+
+### Spacing
+- Card padding: `p-4` (16px) or `p-6` (24px)
+- Section gaps: `gap-6` (24px)
+- Small gaps: `gap-2` (8px) or `gap-3` (12px)
+
+### Layout
+- Sidebar: 240px wide
+- Top bar: 56px height
+- Content max-width: 1400px
+- Cards: `rounded-lg border bg-card`
+
+### Component Classes
+```tsx
+// Card
+<div className="rounded-lg border bg-card p-4">
+
+// Section header
+<h2 className="text-lg font-medium">
+
+// Muted subtext
+<p className="text-sm text-muted-foreground">
+
+// Summary metric
+<span className="text-3xl font-bold">
+```
+
+### Status Badge Colors
+- New: `bg-blue-500/10 text-blue-500`
+- Qualified: `bg-green-500/10 text-green-500`
+- Proposal: `bg-purple-500/10 text-purple-500`
+- Won: `bg-emerald-500/10 text-emerald-500`
+- Lost: `bg-red-500/10 text-red-500`
+
+### Icons
+Use Lucide React. Default size: 16-20px.
+```tsx
+import { LayoutDashboard, Users, Briefcase, CheckSquare, Settings } from "lucide-react"
+```

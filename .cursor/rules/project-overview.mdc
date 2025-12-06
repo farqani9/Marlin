@@ -1,0 +1,56 @@
+---
+description: Overview of Marlin CRM - Internal B2B CRM application
+globs: ["**/*"]
+---
+
+# Marlin CRM - Project Overview
+
+## Purpose
+Marlin is an **internal, Notion-style B2B CRM** that helps teams track leads, deals, tasks, and activity in one distraction-free workspace. It is designed for speed, clarity, and easy daily use.
+
+## Core Entities
+- **Leads** - Potential customers with status tracking and pipeline views
+- **Deals** - Sales opportunities linked to leads with value and stage tracking
+- **Tasks** - Action items linked to leads or deals with due dates
+- **Notes** - Rich text notes attached to leads or deals
+- **Activity Log** - Automatic timeline of all entity changes
+
+## Tech Stack
+
+### Frontend
+- **Framework**: Next.js 16 (App Router)
+- **Language**: TypeScript (strict mode)
+- **Styling**: TailwindCSS v4
+- **Components**: ShadCN UI
+- **UI State**: Zustand
+- **Server State**: TanStack Query (React Query)
+
+### Backend
+- **Database**: Supabase (PostgreSQL)
+- **Auth**: None for MVP (internal use)
+- **Storage**: Supabase Storage (optional)
+
+### Deployment
+- **Frontend**: Vercel
+- **Backend**: Supabase
+
+## Key Configuration Files
+- `package.json` - Dependencies and scripts
+- `next.config.ts` - Next.js configuration
+- `tsconfig.json` - TypeScript configuration
+- `components.json` - ShadCN UI configuration
+- `env.example` - Environment variables template
+
+## Entry Points
+- `src/app/layout.tsx` - Root layout with providers
+- `src/app/page.tsx` - Home page (redirects to dashboard)
+- `src/lib/supabase.ts` - Supabase client
+- `src/components/providers.tsx` - TanStack Query provider
+
+## Available Scripts
+```bash
+npm run dev    # Start development server
+npm run build  # Build for production
+npm run start  # Start production server
+npm run lint   # Run ESLint
+```

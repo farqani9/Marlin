@@ -1,0 +1,130 @@
+---
+description: Security considerations and best practices for Marlin CRM
+globs: ["**/*"]
+---
+
+# Security Considerations
+
+## Current State (MVP)
+Marlin CRM is an **internal, auth-free application** for MVP. Security focuses on:
+- Environment variable protection
+- Input validation
+- Supabase Row Level Security (RLS)
+
+## Environment Variables
+
+### Required Variables
+```bash
+# .env.local (never commit to git)
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+```
+
+### Rules
+- ⚠️ Never commit `.env.local` to version control
+- ⚠️ Use `NEXT_PUBLIC_` prefix only for client-safe values
+- Server-only secrets should NOT have `NEXT_PUBLIC_` prefix
+- Use `env.example` as a template (no real values)
+
+## Supabase Row Level Security (RLS)
+
+### Enable RLS on All Tables
+```sql
+-- Example: Enable RLS on leads table
+ALTER TABLE leads ENABLE ROW LEVEL SECURITY;
+
+-- For internal app (no auth), allow all operations
+CREATE POLICY "Allow all operations" ON leads
+  FOR ALL USING (true) WITH CHECK (true);
+```
+
+### Future Auth Implementation
+When adding authentication:
+```sql
+-- Restrict to authenticated users
+CREATE POLICY "Users can view all leads" ON leads
+  FOR SELECT USING (auth.role() = 'authenticated');
+
+-- Restrict INSERT/UPDATE/DELETE as needed
+CREATE POLICY "Users can modify leads" ON leads
+  FOR ALL USING (auth.uid() IS NOT NULL);
+```
+
+## Input Validation
+
+### Client-Side (Zod)
+```typescript
+import { z } from 'zod'
+
+const leadSchema = z.object({
+  name: z.string().min(1, 'Name is required').max(255),
+  email: z.string().email('Invalid email').optional().or(z.literal('')),
+  phone: z.string().max(20).optional(),
+  company: z.string().max(255).optional(),
+  status: z.enum(['new', 'qualified', 'in_discussion', 'proposal_sent', 'follow_up_required']),
+})
+
+// Usage
+const result = leadSchema.safeParse(formData)
+if (!result.success) {
+  // Handle validation errors
+}
+```
+
+### Server-Side
+- Supabase validates against table constraints
+- Use database CHECK constraints for enum values
+- Set `NOT NULL` constraints appropriately
+
+## Sensitive Areas
+
+### Data That Needs Care
+| Area | Concern | Protection |
+|------|---------|------------|
+| Lead contacts | Email/phone PII | RLS, input validation |
+| Deal values | Financial data | RLS, access control |
+| Notes content | Potentially sensitive | RLS, size limits |
+| Activity logs | Audit trail | Read-only after creation |
+
+### Notes Size Limit
+Prevent performance issues and potential abuse:
+```typescript
+const MAX_NOTE_LENGTH = 10000 // characters
+if (noteContent.length > MAX_NOTE_LENGTH) {
+  throw new Error('Note exceeds maximum length')
+}
+```
+
+## XSS Prevention
+
+### React Auto-Escaping
+React automatically escapes content in JSX. However:
+
+```typescript
+// ✅ Safe - React escapes this
+<p>{userInput}</p>
+
+// ❌ Dangerous - avoid unless absolutely necessary
+<div dangerouslySetInnerHTML={{ __html: userInput }} />
+```
+
+### Rich Text Notes
+If using rich text editor:
+- Sanitize HTML before saving
+- Use DOMPurify or similar library
+- Whitelist allowed HTML tags
+
+## HTTPS
+
+- Vercel automatically enforces HTTPS
+- Supabase connections are always HTTPS
+- No additional configuration needed
+
+## Future Considerations
+
+When adding authentication:
+1. Use Supabase Auth (built-in)
+2. Implement proper session management
+3. Add user-based RLS policies
+4. Consider role-based access (admin, user)
+5. Add audit logging with user IDs
