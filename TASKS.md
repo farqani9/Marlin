@@ -148,7 +148,7 @@
 ## ⚙️ Phase 7: Settings & Polish
 
 ### 7.1 Settings Screen (`/settings`)
-- [ ] Workspace name field
+- [x] Workspace name field
 - [ ] Pipeline stage customization (optional)
 
 ### 7.2 Polish Items
@@ -177,7 +177,7 @@
 | Phase 2: Layout | ✅ Complete (overlays deferred) |
 | Phase 3: Dashboard | ✅ Complete |
 | Phase 4: Leads | ✅ Complete (forms & board deferred) |
-| Phase 5: Deals | ⏳ Not Started |
-| Phase 6: Tasks | ⏳ Not Started |
-| Phase 7: Settings | ⏳ Not Started |
+| Phase 5: Deals | ✅ Complete (Supabase deferred) |
+| Phase 6: Tasks | ✅ Complete (Supabase deferred) |
+| Phase 7: Settings | 🚧 In Progress |
 | Phase 8: Deploy | ⏳ Not Started |
