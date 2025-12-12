@@ -32,11 +32,20 @@
 - **Detail Page** — Tabbed interface (Overview, Activity, Notes, Tasks)
 - **Quick Actions** — Create, edit, delete with toast notifications
 
-### 🎯 Coming Soon
-- 💰 Deals Module (Kanban pipeline)
-- ✅ Tasks Module
-- ⚡ Command Palette (Cmd+K)
-- 🔌 Supabase Integration
+### 💰 Deals Module
+- **Board View** — Kanban pipeline (New, Qualified, Proposal, Negotiation, Won, Lost)
+- **Detail Page** — Track stage, probability, and value
+- **Calculations** — Automatic probability per stage, weighted value stats
+
+### ✅ Tasks Module
+- **Task Management** — Filter by due date (Today, Upcoming, Overdue)
+- **Context Aware** — Link tasks to specific Leads or Deals
+- **Stats** — Quick view of completion status
+
+### ⚡ Global Features
+- **Command Palette** — `Cmd+K` access to all pages and recent items
+- **Dark Mode** — sleek, highly polished dark interface by default
+- **Mock Data** — Full interaction capabilities without backend setup
 
 ---
 
@@ -129,8 +138,8 @@ npm start
 - [x] Global Layout (Sidebar, TopBar, Command Palette)
 - [x] Dashboard Module
 - [x] Leads Module (List, Board, Detail, Forms)
-- [ ] Deals Module
-- [ ] Tasks Module
+- [x] Deals Module
+- [x] Tasks Module
 - [ ] Settings Page
 - [ ] Supabase Integration
 - [ ] Deployment
